@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import API from './Utils/API';
-// import logo from './logo.svg';
-// import './App.css';
 
 class App extends Component {
 
@@ -22,23 +21,35 @@ class App extends Component {
     activity: '',
 
     // View
-    view: 'All'
+    view: 'All',
+
+    // Time
+    time: ''
 
   }
 
   componentDidMount() {
     console.log("Getting Animals")
+    this.interval = setInterval(() => this.setState({ time: moment().format("dddd, MMMM Do YYYY, h:mm:ss a") }), 1000);
     API.getAnimals()
       .then(res => {
         console.log("Response")
         console.log(res.data)
+        // console.log(currentTime)
+
         this.setState({
           animals: res.data.animals,
           speciesList: res.data.species,
           loading: false,
-          animalsLoading: false
+          animalsLoading: false,
+          // time: currentTime
+
         })
       })
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval)
   }
 
   handleInputChange = event => {
@@ -104,6 +115,16 @@ class App extends Component {
     }
   }
 
+  // This does not work at the moment
+  clock = () => {
+    // Here we want the current time to look like this Monday, 12/12/2019 12:45 PM
+    let currentTime = moment().format("dddd, MMMM Do YYYY, h:mm:ss a")
+    console.log(currentTime)
+    this.setState({
+      time: currentTime
+    })
+  }
+
   render() {
 
     return (
@@ -111,7 +132,14 @@ class App extends Component {
 
         {this.state.loading === false ?
           <div>
-            <h1>The Zoo</h1>
+            <div className='row'>
+              <div className='col-3'>
+                <h1>The Zoo</h1>
+              </div>
+              <div className='col-9'>
+                <h2>{this.state.time}</h2>
+              </div>
+            </div>
 
             <div className='row'>
 
@@ -144,7 +172,7 @@ class App extends Component {
 
                 <button type='button' className='btn btn-secondary' onClick={this.addAnimal}>Add Animal</button>
               </div>
-              
+
               <div className='col-9'>
                 <h3>Select an Enclosure to inspect</h3>
                 <div className='row mb-3'>
