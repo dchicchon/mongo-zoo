@@ -18,22 +18,26 @@ module.exports = {
             })
     },
 
+    // Return animals based off the params
     getSpecies: (req, res) => {
         console.log("Getting animals by species")
         console.log(req.params.species)
-        Animal.find()
-            .then(dbAnimals => {
 
-                // Use filter!
-                if (req.params.species === 'All') {
+        if (req.params.species === 'All') {
+            Animal.find()
+                .then(dbAnimals => {
                     res.json(dbAnimals)
-                } else {
-                    let species = dbAnimals.filter(animal => animal.species === req.params.species)
-                    console.log("\nFound all animals in species")
-                    console.log(species)
-                    res.json(species)
-                }
-            })
+                })
+        } else {
+            Animal.find({ 'species': req.params.species })
+                .then(dbAnimals => {
+
+                    console.log(dbAnimals)
+                    res.json(dbAnimals)
+
+                })
+
+        }
     },
 
     addAnimal: (req, res) => {
