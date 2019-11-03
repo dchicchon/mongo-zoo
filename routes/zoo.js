@@ -9,6 +9,9 @@ router.route("/")
 router.route("/:species")
     .get(zooController.getSpecies)
 
+router.route("/increaseAge")
+    .put(zooController.increaseAge)
+
 router.route("/:id")
     .delete(zooController.removeAnimal)
 

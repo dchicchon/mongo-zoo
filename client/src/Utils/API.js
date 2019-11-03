@@ -20,6 +20,12 @@ export default {
 
     deleteAnimal: function (id) {
         return axios.delete("/api/" + id)
+    },
+
+    // Manipulate Animal Activities
+
+    increaseAnimalAge: function () {
+        return axios.put("/api/increaseAge")
     }
 
 }
