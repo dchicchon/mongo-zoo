@@ -99,7 +99,7 @@ class Time {
 
 }
 
-module.exports = Time;
+export default Time;
 
 
 // This works right now! That's awesome
