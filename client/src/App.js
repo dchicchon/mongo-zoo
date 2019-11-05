@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import Time from './Utils/Time';
+// import Animal from './Utils/Animal';
 import API from './Utils/API';
+
+
+// Here is my overall plan
+// Get Time and List of Animals with class
+// I don't think I can use class with react
 
 /////////////////////////////////////// 
 //////////STAT FUNCTIONS//////////////
@@ -50,6 +56,7 @@ class App extends Component {
     animalsLoading: true,
 
     // List of animals
+    // May replace this list with objects created from Class rather than res.data
     animals: [],
     speciesList: [],
 
@@ -59,6 +66,7 @@ class App extends Component {
     species: '',
     gender: '',
     activity: '',
+    birthday: '',
 
     // View
     view: 'All',
@@ -75,31 +83,37 @@ class App extends Component {
   componentDidMount() {
 
     // Lets add our in-game time. Later we will get the time based off of the user id
-    console.log("Get time")
-
     // Get time from database
     API.getTime()
       .then(res => {
+        console.log("RETURN DATA")
+        console.log(res.data)
 
         // If there is not data
         if (res.data.length === 0) {
-          console.log("No Time")
+          console.log("NO DATA")
           let time = new Time()
 
           // Create Time in databased
-          console.log(time)
           API.createTime(time)
-            .then(dbTime => {
-              console.log(dbTime)
+            .then(res2 => {
               this.increaseTime = setInterval(() => {
 
                 // Here I set time in state to control the behavior of other components
                 // Update Time here as well
+                let timeData = {        // we must access the new seconds to store them 
+                  _id: res2.data._id,  // in our database to keep it up to date
+                  seconds: time.seconds,
+                  minutes: time.minutes,
+                  days: time.days,
+                  season: time.season,
+                  year: time.year
+                }
 
                 this.setState({ time })
-                API.updateTime(time)
+                API.updateTime(timeData)
                   .then(res => {
-                    console.log("Time updated")
+                    console.log("New Time updated")
                   })
                 time.increaseTime()
 
@@ -115,7 +129,6 @@ class App extends Component {
         } else {
 
           // Time was found
-          console.log(res.data[0]._id)
           let { seconds, minutes, days, season, year } = res.data[0]
           // Create time object based off of the data received
           let time = new Time(seconds, minutes, days, season, year)
@@ -126,6 +139,7 @@ class App extends Component {
             this.setState({ time })
             time.increaseTime()
 
+
             let timeData = {        // we must access the new seconds to store them 
               _id: res.data[0]._id,  // in our database to keep it up to date
               seconds: time.seconds,
@@ -134,6 +148,37 @@ class App extends Component {
               season: time.season,
               year: time.year
             }
+
+            // Have a check to see if an animals birthday is today
+            if (this.state.animals.length > 0) {
+              for (let i = 0; i < this.state.animals.length; i++) {
+                console.log(this.state.animals[i].birthday)
+                console.log(time.monthStamp)
+                if (this.state.animals[i].birthday === time.monthStamp) {
+
+                  // Make an object out of the animal data
+                  // No need to do this if we can affect the db directly here. Maybe have classes for other uses
+                  // console.log("Age Increased!")
+                  // let { name, age, species, gender, activity, birthday, hunger, stamina, happy } = this.state.animals[i]
+                  // let animal = new Animal(name, age, species, gender, activity, birthday, hunger, stamina, happy);
+                  // animal.increaseAge()
+
+                  // let animalData = {
+                  //   _id: this.state.animals[i]._id,
+                  //   age: animal.age,
+                  // }
+
+                  // Now update the database!
+                  API.increaseAnimalAge(this.state.animals[i]._id)
+                    .then(res2 => {
+                      console.log("Increased Animal Age")
+                      this.loadAnimals()
+                    })
+
+                }
+              }
+            }
+
             API.updateTime(timeData)
               .then(res => {
                 console.log("Time updated")
@@ -158,13 +203,27 @@ class App extends Component {
     clearInterval(this.increaseTime)
   }
 
+  // 
   loadAnimals = () => {
+
+    // let animals = [];
+
     API.getAnimals()
       .then(res => {
-        console.log(res.data)
 
         let averageAge = average(res.data.animals)
         let genderRatio = findRatio(res.data.animals)
+
+        // Dont need to make class out of this
+        // for (let i = 0; i < res.data.animals.length; i++) {
+        // let { name, age, species, gender, activity, birthday, hunger, stamina, happy } = res.data.animals[i]
+        // let animal = new Animal(name, age, species, gender, activity, birthday, hunger, stamina, happy);
+        // let animalData = {
+        //   _id: res.data.animals[i]._id,
+        //   name: animal.name
+        // }
+        // animals.push(animalData);
+        // }
 
         this.setState({
           animals: res.data.animals,
@@ -193,8 +252,10 @@ class App extends Component {
       age: this.state.age,
       species: this.state.species,
       gender: this.state.gender,
-      activity: this.state.activity
+      activity: this.state.activity,
+      birthday: `${this.state.birthday}-0:0`
     }
+    console.log(data)
     this.setState({
       animalsLoading: true
     })
@@ -289,6 +350,11 @@ class App extends Component {
                 <label htmlFor='activity'>Activity</label>
                 <div className='row input-group mb-3'>
                   <input value={this.state.activity} onChange={this.handleInputChange} name='activity' className='form-control' id='activity' />
+                </div>
+
+                <label htmlFor='birthday'>Birthday</label>
+                <div className='row input-group mb-3'>
+                  <input value={this.state.birthday} onChange={this.handleInputChange} name='birthday' className='form-control' id='birthday' placeholder='ex. 1/3' />
                 </div>
 
                 <button type='button' className='btn btn-secondary' onClick={this.addAnimal}>Add Animal</button>

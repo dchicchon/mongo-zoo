@@ -8,10 +8,10 @@ class Animal {
         this.species = species;
         this.gender = gender;
         this.activity = activity;
+        this.birthday = birthday;
         this.hunger = hunger;
         this.stamina = stamina;
         this.happy = happy;
-        this.birthday = birthday
     }
 
     increaseAge() {
@@ -38,6 +38,10 @@ class Animal {
         this.happy = 100;
     }
 
+    sayHi() {
+        console.log("This animal made noise")
+    }
+
 }
 
 // Here we create Tony the tiger. As time ticks by, we want certain properties to decrease in value and based on the stats of those properties
@@ -60,4 +64,4 @@ class Animal {
 
 // console.log(hungerIncrementer)
 
-module.exports = Animal;
+export default Animal;

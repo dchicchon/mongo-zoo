@@ -15,7 +15,7 @@
 // console.log(this.time) in the increase Time function, it would produce 'NaN'. Probably figure this out later
 
 class Time {
-    constructor(seconds = 0, minutes = 0, days = 0, season = 1, year = 0) {
+    constructor(seconds = 0, minutes = 0, days = 1, season = 1, year = 0) {
         this.seconds = seconds;
         this.minutes = minutes;
         this.days = days;

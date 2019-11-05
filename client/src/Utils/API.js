@@ -40,8 +40,8 @@ export default {
 
     // Manipulate Animal Activities
 
-    increaseAnimalAge: function () {
-        return axios.put("/api/increaseAge")
+    increaseAnimalAge: function (id) {
+        return axios.put("/api/increaseAge/" + id)
     }
 
 }

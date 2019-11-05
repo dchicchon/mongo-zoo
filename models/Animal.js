@@ -5,7 +5,8 @@ const Animal = Schema({
     species: String,
     age: Number,
     gender: String,
-    activity: String
+    activity: String,
+    birthday: String
 })
 
 

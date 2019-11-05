@@ -17,7 +17,7 @@ router.route("/time")
 router.route("/:species")
     .get(zooController.getSpecies)
 
-router.route("/increaseAge")
+router.route("/increaseAge/:id")
     .put(animalController.increaseAge)
 
 router.route("/:id")

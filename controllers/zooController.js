@@ -3,6 +3,9 @@ const Time = require("../models/Time")
 
 module.exports = {
 
+    ////////////////////// 
+    /// TIME FUNCTIONS ///
+    ////////////////////// 
     getTime: (req, res) => {
         console.log("Getting Time")
         Time.find()
@@ -33,6 +36,11 @@ module.exports = {
                 res.json(dbTime)
             })
     },
+
+
+    ////////////////////// 
+    /// ZOO FUNCTIONS ///
+    ////////////////////// 
 
     // This should return back a list of animals and a list of species
     getAnimals: (req, res) => {
@@ -74,9 +82,11 @@ module.exports = {
 
     addAnimal: (req, res) => {
         console.log("Animal is being added to zoo")
+        console.log(req.body)
         Animal.create(req.body)
             .then(dbAnimal => {
-
+                console.log("Animal Created")
+                console.log(dbAnimal)
                 res.json(dbAnimal)
             })
     },
