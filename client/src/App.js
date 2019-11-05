@@ -1,15 +1,6 @@
 import React, { Component } from 'react';
-import moment from 'moment';
+import Time from './Utils/Time';
 import API from './Utils/API';
-
-// I want to figure out how to make an in-game clock
-// I have an idea that I could set it up like this:
-// I have 4 seasons, each season lasts for 15 days, each day lasts for 10 minutes?
-// Kind of like Don't Starve
-// And I can set a birthday for my animals like 
-// Gary.birthday = (Season 2)(Day 10)
-// I'm going to work in a separate file for this = Utils/time.js
-
 
 /////////////////////////////////////// 
 //////////STAT FUNCTIONS//////////////
@@ -43,6 +34,7 @@ function findRatio(arr) {
   return 'N/A'
 
 }
+
 
 /////////////////////////////////////// 
 //////////END STAT FUNCTIONS//////////
@@ -81,36 +73,94 @@ class App extends Component {
   }
 
   componentDidMount() {
-    console.log("Getting Animals")
 
-    // This is nice for now, but later I would like to have in-app time. Meaning that the apps 'Time' goes by differently than real-time. IN_GAME TIME
-    this.interval = setInterval(() => this.setState({ time: moment().format("dddd, MMMM Do YYYY, h:mm:ss a") }), 1000);
+    // Lets add our in-game time. Later we will get the time based off of the user id
+    console.log("Get time")
 
-    // This interval executes every 5 seconds, I want to use this to increase the age of the animals every minute
-    // this.testInterval = setInterval(() => console.log("TEST"), 5000)
+    // Get time from database
+    API.getTime()
+      .then(res => {
 
-    // This will increase the animal's age every 6 minutes. Later on I would like to give a birth date to each animal to increase their age rather than them being all born at the same time (age increase at the same time)
-    this.increaseAgeInterval = setInterval(() =>
-      API.increaseAnimalAge()
-        .then(res => {
-          console.log("Increased Animal Age")
-          API.getSpecies(this.state.view)
-            .then(res2 => {
-              let averageAge = average(res2.data)
-              let genderRatio = findRatio(res2.data)
+        // If there is not data
+        if (res.data.length === 0) {
+          console.log("No Time")
+          let time = new Time()
 
-              this.setState({
-                animals: res2.data,
-                averageAge,
-                genderRatio
-              })
+          // Create Time in databased
+          console.log(time)
+          API.createTime(time)
+            .then(dbTime => {
+              console.log(dbTime)
+              this.increaseTime = setInterval(() => {
+
+                // Here I set time in state to control the behavior of other components
+                // Update Time here as well
+
+                this.setState({ time })
+                API.updateTime(time)
+                  .then(res => {
+                    console.log("Time updated")
+                  })
+                time.increaseTime()
+
+              }, 1000)
+
+              // I want this to happen once the time interval has started
+              this.loadAnimals()
+
             })
-        })
-      , 1000 * 360)
 
+
+          // If there is data
+        } else {
+
+          // Time was found
+          console.log(res.data[0]._id)
+          let { seconds, minutes, days, season, year } = res.data[0]
+          // Create time object based off of the data received
+          let time = new Time(seconds, minutes, days, season, year)
+
+          // Set interval for time, This will constantly update the database
+          // This will also change the state of the App component
+          this.increaseTime = setInterval(() => {
+            this.setState({ time })
+            time.increaseTime()
+
+            let timeData = {        // we must access the new seconds to store them 
+              _id: res.data[0]._id,  // in our database to keep it up to date
+              seconds: time.seconds,
+              minutes: time.minutes,
+              days: time.days,
+              season: time.season,
+              year: time.year
+            }
+            API.updateTime(timeData)
+              .then(res => {
+                console.log("Time updated")
+              })
+
+            // Set State does not work when I set it after time.increaseTime()
+            // this.setState({
+            //   time: time1.timeStamp
+            // })
+
+          }, 1000)
+
+          // I want this to happen once the time interval has started
+          this.loadAnimals()
+        }
+      })
+  }
+
+  componentWillUnmount() {
+    // clearInterval(this.interval)
+    // clearInterval(this.increaseAgeInterval)
+    clearInterval(this.increaseTime)
+  }
+
+  loadAnimals = () => {
     API.getAnimals()
       .then(res => {
-        console.log("Response")
         console.log(res.data)
 
         let averageAge = average(res.data.animals)
@@ -128,11 +178,6 @@ class App extends Component {
 
         })
       })
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.interval)
-    clearInterval(this.increaseAgeInterval)
   }
 
   handleInputChange = event => {
@@ -168,16 +213,6 @@ class App extends Component {
           })
       })
   }
-
-  // This is now integrated within get species
-  // changeView = event => {
-  //   let { value } = event.target
-  //   this.setState({
-  //     view: value
-  //   })
-  // }
-
-
 
   // Change the view depending on which button we click
   getSpecies = (event) => {
@@ -223,7 +258,7 @@ class App extends Component {
                 <h1>The Zoo</h1>
               </div>
               <div className='col-9'>
-                <h2>{this.state.time}</h2>
+                <h2>{this.state.time.prettyTime}</h2>
               </div>
             </div>
 

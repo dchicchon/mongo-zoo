@@ -1,6 +1,38 @@
 const Animal = require("../models/Animal")
+const Time = require("../models/Time")
 
 module.exports = {
+
+    getTime: (req, res) => {
+        console.log("Getting Time")
+        Time.find()
+            .then(dbTime => {
+                console.log("Got Time")
+                console.log(dbTime)
+                res.json(dbTime)
+            })
+    },
+
+    createTime: (req, res) => {
+        console.log(req.body)
+        Time.create(req.body)
+            .then(dbTime => {
+                console.log("Time created")
+                console.log(dbTime)
+                res.json(dbTime)
+            })
+    },
+
+    updateTime: (req, res) => {
+        console.log("\nUpdate Time")
+        console.log(req.body)
+        let { seconds, minutes, days, season, year } = req.body
+        Time.updateOne({ _id: req.body._id }, { $set: { seconds, minutes, days, season, year } })
+            .then(dbTime => {
+                console.log(dbTime)
+                res.json(dbTime)
+            })
+    },
 
     // This should return back a list of animals and a list of species
     getAnimals: (req, res) => {
@@ -81,14 +113,14 @@ module.exports = {
 
     // I may also use classes to create new animals!
 
-    increaseAge: (req, res) => {
-        console.log("Increase age of all the animals")
-        Animal.updateMany(
-            { age: { $gt: -1 } },
-            { $inc: { age: 1 } })
-            .then(dbAnimals => {
-                console.log("Increased Animal Age")
-                res.send(dbAnimals)
-            })
-    }
+    // increaseAge: (req, res) => {
+    //     console.log("Increase age of all the animals")
+    //     Animal.updateMany(
+    //         { age: { $gt: -1 } },
+    //         { $inc: { age: 1 } })
+    //         .then(dbAnimals => {
+    //             console.log("Increased Animal Age")
+    //             res.send(dbAnimals)
+    //         })
+    // }
 }

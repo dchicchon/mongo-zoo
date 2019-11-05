@@ -15,12 +15,12 @@
 // console.log(this.time) in the increase Time function, it would produce 'NaN'. Probably figure this out later
 
 class Time {
-    constructor() {
-        this.seconds = 0;
-        this.minutes = 0;
-        this.days = 1;
-        this.season = 1;
-        this.year = 0;
+    constructor(seconds = 0, minutes = 0, days = 0, season = 1, year = 0) {
+        this.seconds = seconds;
+        this.minutes = minutes;
+        this.days = days;
+        this.season = season;
+        this.year = year;
 
         // Remove this because now we have getters to this, which they will be always up to date
         // this.clock = `${this.minutes}:${this.seconds}`;
@@ -36,19 +36,40 @@ class Time {
 
     // Also, to have my items be updated constantly, I should have getters here. Based off of Jonas Wilms suggestion
     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get
+
     get clock() { // if this is a getter, it is always up to date
         return `${this.minutes}:${this.seconds}`;
     }
     get monthDate() {
-         return `${this.season}/${this.days}`;
+        return `${this.season}/${this.days}`;
     }
     get yearDate() {
-         return `${this.season}/${this.days}/${this.year}`;
+        return `${this.season}/${this.days}/${this.year}`;
     }
-    get timeStamp () {  
-          return  `${this.season}/${this.days}/${this.year}-${this.minutes}:${this.seconds}`;
+
+    get monthStamp() {
+        return `${this.season}/${this.days}-${this.minutes}:${this.seconds}`;
+
     }
-  
+    get timeStamp() {
+        return `${this.season}/${this.days}/${this.year}-${this.minutes}:${this.seconds}`;
+    }
+
+    get prettyTime() {
+        let seasonKey = {
+            '1': 'Fall',
+            '2': 'Winter',
+            '3': 'Spring',
+            '4': 'Summer'
+        }
+        if (this.seconds < 10) {
+            return `Season: ${seasonKey[`${this.season}`]} Day: ${this.days} Time:    ${this.minutes}:0${this.seconds}`
+        } else {
+            return `Season: ${seasonKey[`${this.season}`]} Day: ${this.days} Time:    ${this.minutes}:${this.seconds}`
+        }
+
+    }
+
     increaseTime() {
         // Unnecessary I dont know how to spell this
         // this.clock = `${this.minutes}:${this.seconds}`
@@ -56,7 +77,7 @@ class Time {
         // this.yearDate = `${this.season}/${this.days}/${this.year}`
         // this.timeStamp = `${this.season}/${this.days}/${this.year}-${this.minutes}:${this.seconds}`
 
-        if (this.seconds === 60) {
+        if (this.seconds === 59) {
             this.seconds = 0;
             this.minutes++
             if (this.minutes === 5) {
