@@ -168,7 +168,11 @@ class App extends Component {
                   API.increaseAnimalAge(this.state.animals[i]._id)
                     .then(res2 => {
 
-                      this.loadAnimals()
+                      if (this.state.view === 'All') {
+                        this.loadAnimals()
+                      } else {
+                        this.getViewSpecies()
+                      }
 
                       // Here I can load up logs for animals. Also be sure to pop the log array when it's length reaches 5  
                       let logs = this.state.logs
@@ -276,7 +280,27 @@ class App extends Component {
       })
   }
 
-  // Change the view depending on which button we click
+  // Change the view depending on which button we click. Lets change this to a functino that doesnt depend on events!
+
+  getViewSpecies = () => {
+    let species = this.state.view
+    API.getSpecies(species)
+      .then(res => {
+        let averageAge = average(res.data)
+        let genderRatio = findRatio(res.data)
+
+        this.setState({
+          view: species,
+          animals: res.data,
+          animalsLoading: false,
+
+          // Stats
+          averageAge,
+          genderRatio
+        })
+      })
+  }
+
   getSpecies = (event) => {
     let { value: species } = event.target
     console.log(species)
@@ -413,16 +437,35 @@ class App extends Component {
                                 {animal.gender}
                               </div>
 
-                              {/* Animal Stats */}
+                              {/* =============================================================== */}
+                              {/* Begin Animal Stats */}
                               <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
+
                                 {animal.hunger}
+                                <div className="progress">
+                                  <div className="progress-bar bg-info" role="progressbar" style={{ width: animal.hunger }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+
                               </div>
                               <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
+
                                 {animal.stamina}
+                                <div className="progress">
+                                  <div className="progress-bar bg-info" role="progressbar" style={{ width: animal.stamina }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+
                               </div>
                               <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
+
                                 {animal.happy}
+                                <div className="progress">
+                                  <div className="progress-bar bg-info" role="progressbar" style={{ width: animal.happy }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+
                               </div>
+
+                              {/* End Animal Stats */}
+                              {/* =============================================================== */}
 
                               <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
                                 {animal.activity}
@@ -460,7 +503,7 @@ class App extends Component {
                       </div>
 
                       {/* There should be a graph for the total zoo and for each enclosure */}
-                      <div id='graph'>
+                      < div id='graph' >
 
                       </div>
                     </div>
