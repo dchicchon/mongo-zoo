@@ -1,6 +1,31 @@
 body {
   /* background: steelblue; */
   color: white;
-  background: darkslategrey;
+  --backgroundColor: #4B644A;
+  --primaryColor: rgb(47, 79, 79);
+  --secondaryColor: rgb(57, 58, 59);
+  background-color: var(--backgroundColor);
+}
+
+.btn-secondary {
+  background: var(--primaryColor);
+  border-color: var(--secondaryColor);
+}
+
+.btn-secondary:hover {
+  background: var(--primaryColor);
+  border-color: var(--secondaryColor);
+}
+
+h1, h2, h3, h4, h5 {
+  font-weight: 100;
+}
+
+.navbar {
+  color: white !important;
+  background: var(--primaryColor) !important;
+  border-bottom: 1px solid var(--secondaryColor);
+  /* box-shadow: 10px 10px 5px rgb(54, 54, 54) !important; */
+  /* position: fixed !important; */
 }
 /*# sourceMappingURL=style.css.map */

@@ -84,9 +84,9 @@ class Time {
                 this.minutes = 0;
                 this.days++
                 if (this.days === 15) {
-                    this.days = 0;
+                    this.days = 1;
                     this.season++
-                    if (this.season > 4) {
+                    if (this.season === 5) {
                         this.season = 1;
                         this.year++
                     }

@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
+
+// Utils
 import Time from './Utils/Time';
 // import Animal from './Utils/Animal';
 import API from './Utils/API';
 
+// Components
+import Navbar from './Components/Navbar'
 
 // Here is my overall plan
 // Get Time and List of Animals with class
@@ -74,20 +78,25 @@ class App extends Component {
     // Time
     time: '',
 
+    // Logs
+    message: '',
+
     // Stats
     averageAge: '',
-    genderRatio: ''
+    genderRatio: '',
 
   }
 
+  // Here I am getting the time, running a check on the animals birthday, and updating the time in the
+  // database
   componentDidMount() {
 
     // Lets add our in-game time. Later we will get the time based off of the user id
     // Get time from database
     API.getTime()
       .then(res => {
-        console.log("RETURN DATA")
-        console.log(res.data)
+        // console.log("RETURN DATA")
+        // console.log(res.data)
 
         // If there is not data
         if (res.data.length === 0) {
@@ -135,6 +144,8 @@ class App extends Component {
 
           // Set interval for time, This will constantly update the database
           // This will also change the state of the App component
+          // I want this to happen once the time interval has started
+          this.loadAnimals()
           this.increaseTime = setInterval(() => {
             this.setState({ time })
             time.increaseTime()
@@ -152,27 +163,22 @@ class App extends Component {
             // Have a check to see if an animals birthday is today
             if (this.state.animals.length > 0) {
               for (let i = 0; i < this.state.animals.length; i++) {
-                console.log(this.state.animals[i].birthday)
-                console.log(time.monthStamp)
+                // console.log(this.state.animals[i].birthday)
+                // console.log(time.monthStamp)
                 if (this.state.animals[i].birthday === time.monthStamp) {
 
-                  // Make an object out of the animal data
-                  // No need to do this if we can affect the db directly here. Maybe have classes for other uses
-                  // console.log("Age Increased!")
-                  // let { name, age, species, gender, activity, birthday, hunger, stamina, happy } = this.state.animals[i]
-                  // let animal = new Animal(name, age, species, gender, activity, birthday, hunger, stamina, happy);
-                  // animal.increaseAge()
-
-                  // let animalData = {
-                  //   _id: this.state.animals[i]._id,
-                  //   age: animal.age,
-                  // }
-
+                  // Making an object out of the animal will take too long, lets just modify it in the db
                   // Now update the database!
                   API.increaseAnimalAge(this.state.animals[i]._id)
                     .then(res2 => {
-                      console.log("Increased Animal Age")
+                      // console.log(res2.data)
+                      // Could use the response to show the new age
+                      // console.log(time.monthStamp)
                       this.loadAnimals()
+                      this.setState({
+                        message: `[${time.monthStamp}]: ${this.state.animals[i].name}'s birthday is today! They are now ${this.state.animals[i].age + 1}`
+                      })
+                      // Reload the animals to reflect 
                     })
 
                 }
@@ -180,8 +186,8 @@ class App extends Component {
             }
 
             API.updateTime(timeData)
-              .then(res => {
-                console.log("Time updated")
+              .then(res3 => {
+                // console.log("Time updated")
               })
 
             // Set State does not work when I set it after time.increaseTime()
@@ -191,8 +197,7 @@ class App extends Component {
 
           }, 1000)
 
-          // I want this to happen once the time interval has started
-          this.loadAnimals()
+
         }
       })
   }
@@ -310,143 +315,155 @@ class App extends Component {
   render() {
 
     return (
-      <div className='container mt-4'>
+      <div>
+        <Navbar />
+        <div className='container mt-4'>
 
-        {this.state.loading === false ?
-          <div>
-            <div className='row'>
-              <div className='col-3'>
-                <h1>The Zoo</h1>
-              </div>
-              <div className='col-9'>
-                <h2>{this.state.time.prettyTime}</h2>
-              </div>
-            </div>
-
-            <div className='row'>
-
-              {/* This will be the AddAnimal Component in the future. Should have dropdown menus for several parts */}
-              <div className='col-3 mb-4'>
-                <label htmlFor='name'>Name</label>
-                <div className='row input-group mb-3'>
-                  <input value={this.state.name} onChange={this.handleInputChange} name='name' className="form-control" id='name' />
+          {this.state.loading === false ?
+            <div>
+              <div className='row'>
+                <div className='col-3'>
+                  <h1>The Zoo</h1>
                 </div>
-
-                <label htmlFor='age'>Age</label>
-                <div className='row input-group mb-3'>
-                  <input value={this.state.age} onChange={this.handleInputChange} name='age' className="form-control" id='age' />
+                <div className='col-9'>
+                  <h2>{this.state.time.prettyTime}</h2>
                 </div>
-
-                <label htmlFor='species'>Species</label>
-                <div className='row input-group mb-3'>
-                  <input value={this.state.species} onChange={this.handleInputChange} name='species' className='form-control' id='species' />
-                </div>
-
-                <label htmlFor='gender'>Gender</label>
-                <div className='row input-group mb-3'>
-                  <input value={this.state.gender} onChange={this.handleInputChange} name='gender' className='form-control' id='gender' />
-                </div>
-
-                <label htmlFor='activity'>Activity</label>
-                <div className='row input-group mb-3'>
-                  <input value={this.state.activity} onChange={this.handleInputChange} name='activity' className='form-control' id='activity' />
-                </div>
-
-                <label htmlFor='birthday'>Birthday</label>
-                <div className='row input-group mb-3'>
-                  <input value={this.state.birthday} onChange={this.handleInputChange} name='birthday' className='form-control' id='birthday' placeholder='ex. 1/3' />
-                </div>
-
-                <button type='button' className='btn btn-secondary' onClick={this.addAnimal}>Add Animal</button>
               </div>
 
-              <div className='col-9'>
-                <h4>Select an Enclosure to inspect</h4>
-                <div className='row mb-3'>
-                  <button type='button' className='btn btn-secondary col-1 ml-2' value='All' onClick={this.getSpecies}>All</button>
-                  {this.state.speciesList.length > 0 ?
-                    this.state.speciesList.map((species, i) => (
-                      <button type='button' className='btn btn-secondary col-1 ml-2' value={species} key={i} onClick={this.getSpecies}>{species}</button>
-                    ))
-                    : ""}
+              <div className='row'>
 
+                {/* This will be the AddAnimal Component in the future. Should have dropdown menus for several parts */}
+                <div className='col-3 mb-4'>
+                  <label htmlFor='name'>Name</label>
+                  <div className='row input-group mb-3'>
+                    <input value={this.state.name} onChange={this.handleInputChange} name='name' className="form-control" id='name' />
+                  </div>
+
+                  <label htmlFor='age'>Age</label>
+                  <div className='row input-group mb-3'>
+                    <input value={this.state.age} onChange={this.handleInputChange} name='age' className="form-control" id='age' />
+                  </div>
+
+                  <label htmlFor='species'>Species</label>
+                  <div className='row input-group mb-3'>
+                    <input value={this.state.species} onChange={this.handleInputChange} name='species' className='form-control' id='species' />
+                  </div>
+
+                  <label htmlFor='gender'>Gender</label>
+                  <div className='row input-group mb-3'>
+                    <input value={this.state.gender} onChange={this.handleInputChange} name='gender' className='form-control' id='gender' />
+                  </div>
+
+                  <label htmlFor='activity'>Activity</label>
+                  <div className='row input-group mb-3'>
+                    <input value={this.state.activity} onChange={this.handleInputChange} name='activity' className='form-control' id='activity' />
+                  </div>
+
+                  <label htmlFor='birthday'>Birthday</label>
+                  <div className='row input-group mb-3'>
+                    <input value={this.state.birthday} onChange={this.handleInputChange} name='birthday' className='form-control' id='birthday' placeholder='ex. 1/3' />
+                  </div>
+
+                  <button type='button' className='btn btn-secondary' onClick={this.addAnimal}>Add Animal</button>
                 </div>
-                {/* Here we will map each of the animals */}
 
-                {this.state.animalsLoading === false ?
+                <div className='col-9'>
+                  <h4>Select an Enclosure to inspect</h4>
+                  <div className='row mb-3'>
+                    <button type='button' className='btn btn-secondary col-1 ml-2' value='All' onClick={this.getSpecies}>All</button>
+                    {this.state.speciesList.length > 0 ?
+                      this.state.speciesList.map((species, i) => (
+                        <button type='button' className='btn btn-secondary col-1 ml-2' value={species} key={i} onClick={this.getSpecies}>{species}</button>
+                      ))
+                      : ""}
 
-                  // This is the the table
-                  <div>
-                    <div id='table'>
+                  </div>
+                  {/* Here we will map each of the animals */}
 
-                      <h4>{this.state.view}</h4>
+                  {this.state.animalsLoading === false ?
 
-                      <div className='row'>
-                        <div className="col-2"><h5>Name</h5></div>
-                        <div className='col-2'><h5>Age</h5></div>
-                        <div className='col-2'><h5>Species</h5></div>
-                        <div className='col-2'><h5>Gender</h5></div>
-                        <div className='col-2'><h5>Activity</h5></div>
+                    // This is the the table
+                    <div>
+                      <div id='table'>
+
+                        <h4>{this.state.view}</h4>
+
+                        <div className='row'>
+                          <div className="col-2"><h5>Name</h5></div>
+                          <div className='col-2'><h5>Age</h5></div>
+                          <div className='col-2'><h5>Species</h5></div>
+                          <div className='col-2'><h5>Gender</h5></div>
+                          <div className='col-2'><h5>Activity</h5></div>
+                          <div className='col-2'><h5>Birthday</h5></div>
+
+                        </div>
+
+                        {this.state.animals.length > 0 ?
+                          this.state.animals.map((animal, i) => (
+                            <div className='row' key={i}>
+                              <div className='col-2'>
+                                {animal.name}
+                              </div>
+                              <div className='col-2'>
+                                {animal.age}
+                              </div>
+                              <div className='col-2'>
+                                {animal.species}
+                              </div>
+                              <div className='col-2'>
+                                {animal.gender}
+                              </div>
+                              <div className='col-2'>
+                                {animal.activity}
+                              </div>
+                              <div className='col-2'>
+                                {animal.birthday.substring(0, 4)}
+                              </div>
+                            </div>
+
+                          ))
+                          : <div className='row'>No animals in zoo yet</div>}
+
+                      </div>
+                      <div className='mt-3 row'>
+                        {/* Stats */}
+                        <div style={{ backgroundColor: "#2f4f4f", border: '7px solid rgb(57,58,59)' }} className='col-6' id='stats'>
+                          <h2>Stats</h2>
+                          <h5>Total Inhabitants: {this.state.animals.length}</h5>
+                          <h5>Male to Female Ratio: {this.state.genderRatio} </h5>
+                          <h5>Average Age: {this.state.averageAge}  </h5>
+                        </div>
+                        {/* Message Logs */}
+                        {/* #56A3A6: Blue */}
+                        <div style={{ backgroundColor: "#2f4f4f", border: '7px solid rgb(57,58,59)' }} className='col-6' id='logs'>
+                          <h2>Logs</h2>
+                          {this.state.message}
+                        </div>
                       </div>
 
-                      {this.state.animals.length > 0 ?
-                        this.state.animals.map((animal, i) => (
-                          <div className='row' key={i}>
-                            <div className='col-2'>
-                              {animal.name}
-                            </div>
-                            <div className='col-2'>
-                              {animal.age}
-                            </div>
-                            <div className='col-2'>
-                              {animal.species}
-                            </div>
-                            <div className='col-2'>
-                              {animal.gender}
-                            </div>
-                            <div className='col-2'>
-                              {animal.activity}
-                            </div>
-                          </div>
+                      {/* There should be a graph for the total zoo and for each enclosure */}
+                      <div id='graph'>
 
-                        ))
-                        : <div className='row'>No animals in zoo yet</div>}
-
+                      </div>
                     </div>
-                    <div className='mt-3' id='stats'>
-                      <h5>Total Inhabitants: {this.state.animals.length}</h5>
+                    :
+                    <div className="spinner-border text-light" role="status">
+                      <span className="sr-only">Loading...</span>
+                    </div>}
 
-                      {/* This should return back total females/ total males */}
-                      <h5>Male to Female Ratio: {this.state.genderRatio} </h5>
+                </div>
 
-                      {/* For the whole array, output a value */}
-                      <h5>Average Age: {this.state.averageAge}  </h5>
-
-
-                    </div>
-
-                    {/* There should be a graph for the total zoo and for each enclosure */}
-                    <div id='graph'>
-
-                    </div>
-                  </div>
-                  :
-                  <div className="spinner-border text-light" role="status">
-                    <span className="sr-only">Loading...</span>
-                  </div>}
 
               </div>
 
-
             </div>
 
-          </div>
+            :
+            <div className="spinner-border text-light" role="status">
+              <span className="sr-only">Loading...</span>
+            </div>}
 
-          :
-          <div className="spinner-border text-light" role="status">
-            <span className="sr-only">Loading...</span>
-          </div>}
-
+        </div>
       </div>
     );
   }

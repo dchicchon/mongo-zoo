@@ -9,13 +9,13 @@ module.exports = {
 
     increaseAge: (req, res) => {
         console.log("Increase age of animal")
-        console.log(req.params.id)
+        // console.log(req.params.id)
         Animal.updateOne(
             { _id: req.params.id },
             { $inc: { age: 1 } })
-            .then(dbAnimals => {
+            .then(dbAnimal => {
                 console.log("Increased Animal Age")
-                res.send(dbAnimals)
+                res.send(dbAnimal)
             })
     }
 }

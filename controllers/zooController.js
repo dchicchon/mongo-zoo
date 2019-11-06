@@ -17,22 +17,19 @@ module.exports = {
     },
 
     createTime: (req, res) => {
-        console.log(req.body)
+        // console.log(req.body)
         Time.create(req.body)
             .then(dbTime => {
-                console.log("Time created")
-                console.log(dbTime)
+                // console.log("Time created")
+                // console.log(dbTime)
                 res.json(dbTime)
             })
     },
 
     updateTime: (req, res) => {
-        console.log("\nUpdate Time")
-        console.log(req.body)
         let { seconds, minutes, days, season, year } = req.body
         Time.updateOne({ _id: req.body._id }, { $set: { seconds, minutes, days, season, year } })
             .then(dbTime => {
-                console.log(dbTime)
                 res.json(dbTime)
             })
     },
