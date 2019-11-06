@@ -80,6 +80,7 @@ class App extends Component {
 
     // Logs
     message: '',
+    logs: [],
 
     // Stats
     averageAge: '',
@@ -98,7 +99,6 @@ class App extends Component {
         // console.log("RETURN DATA")
         // console.log(res.data)
 
-        // If there is not data
         if (res.data.length === 0) {
           console.log("NO DATA")
           let time = new Time()
@@ -175,8 +175,15 @@ class App extends Component {
                       // Could use the response to show the new age
                       // console.log(time.monthStamp)
                       this.loadAnimals()
-                      this.setState({
+
+
+                      let message = {
                         message: `[${time.monthStamp}]: ${this.state.animals[i].name}'s birthday is today! They are now ${this.state.animals[i].age + 1}`
+                      }
+
+                      let logs = this.state.logs.push(message)
+                      this.setState({
+                        logs
                       })
                       // Reload the animals to reflect 
                     })
@@ -190,11 +197,6 @@ class App extends Component {
                 // console.log("Time updated")
               })
 
-            // Set State does not work when I set it after time.increaseTime()
-            // this.setState({
-            //   time: time1.timeStamp
-            // })
-
           }, 1000)
 
 
@@ -203,32 +205,17 @@ class App extends Component {
   }
 
   componentWillUnmount() {
-    // clearInterval(this.interval)
-    // clearInterval(this.increaseAgeInterval)
     clearInterval(this.increaseTime)
   }
 
-  // 
   loadAnimals = () => {
-
-    // let animals = [];
 
     API.getAnimals()
       .then(res => {
 
+        // If res.data has data => {}
         let averageAge = average(res.data.animals)
         let genderRatio = findRatio(res.data.animals)
-
-        // Dont need to make class out of this
-        // for (let i = 0; i < res.data.animals.length; i++) {
-        // let { name, age, species, gender, activity, birthday, hunger, stamina, happy } = res.data.animals[i]
-        // let animal = new Animal(name, age, species, gender, activity, birthday, hunger, stamina, happy);
-        // let animalData = {
-        //   _id: res.data.animals[i]._id,
-        //   name: animal.name
-        // }
-        // animals.push(animalData);
-        // }
 
         this.setState({
           animals: res.data.animals,
@@ -317,7 +304,7 @@ class App extends Component {
     return (
       <div>
         <Navbar />
-        <div className='container mt-4'>
+        <div className='container mt-4 mb-4'>
 
           {this.state.loading === false ?
             <div>
@@ -381,39 +368,39 @@ class App extends Component {
 
                   {this.state.animalsLoading === false ?
                     <div>
-                      <div id='table'>
+                      <div id='table' >
 
                         <h4>{this.state.view}</h4>
 
                         <div className='row'>
-                          <div className="col-2"><h5>Name</h5></div>
-                          <div className='col-2'><h5>Age</h5></div>
-                          <div className='col-2'><h5>Species</h5></div>
-                          <div className='col-2'><h5>Gender</h5></div>
-                          <div className='col-2'><h5>Activity</h5></div>
-                          <div className='col-2'><h5>Birthday</h5></div>
+                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className="col-2 text-center"><h4>Name</h4></div>
+                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-2 text-center'><h4>Age</h4></div>
+                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-2 text-center'><h4>Species</h4></div>
+                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-2 text-center'><h4>Gender</h4></div>
+                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-2 text-center'><h4>Activity</h4></div>
+                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-2 text-center'><h4>Birthday</h4></div>
 
                         </div>
 
                         {this.state.animals.length > 0 ?
                           this.state.animals.map((animal, i) => (
                             <div className='row' key={i}>
-                              <div className='col-2'>
+                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-2 text-center'>
                                 {animal.name}
                               </div>
-                              <div className='col-2'>
+                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-2 text-center'>
                                 {animal.age}
                               </div>
-                              <div className='col-2'>
+                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-2 text-center'>
                                 {animal.species}
                               </div>
-                              <div className='col-2'>
+                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-2 text-center'>
                                 {animal.gender}
                               </div>
-                              <div className='col-2'>
+                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-2 text-center'>
                                 {animal.activity}
                               </div>
-                              <div className='col-2'>
+                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-2 text-center'>
                                 {animal.birthday.substring(0, 4)}
                                 {/* {animal.birthday} */}
                               </div>
@@ -434,7 +421,13 @@ class App extends Component {
                         {/* Message Logs */}
                         {/* #56A3A6: Blue */}
                         <div style={{ backgroundColor: "#2f4f4f", border: '7px solid rgb(57,58,59)' }} className='col-6' id='logs'>
+
                           <h2>Logs</h2>
+                          {this.state.logs.length > 0 ?
+                            this.state.logs.map((log, i) => (
+                              <p>{log.message}</p>
+                            ))
+                            : ''}
                           {this.state.message}
                         </div>
                       </div>
