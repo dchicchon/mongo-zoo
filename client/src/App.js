@@ -378,11 +378,8 @@ class App extends Component {
                       : ""}
 
                   </div>
-                  {/* Here we will map each of the animals */}
 
                   {this.state.animalsLoading === false ?
-
-                    // This is the the table
                     <div>
                       <div id='table'>
 

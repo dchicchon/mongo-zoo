@@ -22,10 +22,12 @@ h1, h2, h3, h4, h5 {
 }
 
 .navbar {
-  color: white !important;
+  /* color: white !important; */
   background: var(--primaryColor) !important;
   border-bottom: 1px solid var(--secondaryColor);
   /* box-shadow: 10px 10px 5px rgb(54, 54, 54) !important; */
   /* position: fixed !important; */
 }
+
+
 /*# sourceMappingURL=style.css.map */
