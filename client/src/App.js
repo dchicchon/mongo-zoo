@@ -174,14 +174,19 @@ class App extends Component {
                       // console.log(res2.data)
                       // Could use the response to show the new age
                       // console.log(time.monthStamp)
+
+                      // Lets do this but also I want to pass in options to this.loadAnimals where 
+                      // I can decide not to do a certain function in it.
                       this.loadAnimals()
 
 
+                      let logs = []
                       let message = {
                         message: `[${time.monthStamp}]: ${this.state.animals[i].name}'s birthday is today! They are now ${this.state.animals[i].age + 1}`
                       }
 
-                      let logs = this.state.logs.push(message)
+                      logs.push(message);
+                      console.log(logs)
                       this.setState({
                         logs
                       })
@@ -425,7 +430,7 @@ class App extends Component {
                           <h2>Logs</h2>
                           {this.state.logs.length > 0 ?
                             this.state.logs.map((log, i) => (
-                              <p>{log.message}</p>
+                              <p key={i}>{log.message}</p>
                             ))
                             : ''}
                           {this.state.message}
