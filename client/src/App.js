@@ -350,41 +350,63 @@ class App extends Component {
                 </div>
               </div>
 
+              {/* This will be the AddAnimal Component in the future. Should have dropdown menus for several parts */}
               <div className='row'>
-
-                {/* This will be the AddAnimal Component in the future. Should have dropdown menus for several parts */}
                 <div className='col-3 mb-4'>
-                  <label htmlFor='name'>Name</label>
-                  <div className='row input-group mb-3'>
-                    <input value={this.state.name} onChange={this.handleInputChange} name='name' className="form-control" id='name' />
-                  </div>
 
-                  <label htmlFor='age'>Age</label>
-                  <div className='row input-group mb-3'>
-                    <input value={this.state.age} onChange={this.handleInputChange} name='age' className="form-control" id='age' />
-                  </div>
+                  <form>
 
-                  <label htmlFor='species'>Species</label>
-                  <div className='row input-group mb-3'>
-                    <input value={this.state.species} onChange={this.handleInputChange} name='species' className='form-control' id='species' />
-                  </div>
+                    <div className='row'>
+                      <div className='col-6'>
+                        <label htmlFor='name'>Name</label>
+                        <div className='input-group mb-3'>
+                          <input value={this.state.name} onChange={this.handleInputChange} name='name' className="form-control" id='name' />
+                        </div>
+                      </div>
+                      <div className='col-6'>
+                        <label htmlFor='age'>Age</label>
+                        <div className='input-group mb-3'>
+                          <input value={this.state.age} onChange={this.handleInputChange} name='age' className="form-control" id='age' />
+                        </div>
+                      </div>
+                    </div>
 
-                  <label htmlFor='gender'>Gender</label>
-                  <div className='row input-group mb-3'>
-                    <input value={this.state.gender} onChange={this.handleInputChange} name='gender' className='form-control' id='gender' />
-                  </div>
+                    <div className='row'>
+                      <div className='col-6'>
+                        <label htmlFor='species'>Species</label>
+                        <div className='input-group mb-3'>
+                          <input value={this.state.species} onChange={this.handleInputChange} name='species' className='form-control' id='species' />
+                        </div>
 
-                  <label htmlFor='activity'>Activity</label>
-                  <div className='row input-group mb-3'>
-                    <input value={this.state.activity} onChange={this.handleInputChange} name='activity' className='form-control' id='activity' />
-                  </div>
+                      </div>
+                      <div className='col-6'>
+                        <label htmlFor='gender'>Gender</label>
+                        <div className='input-group mb-3'>
+                          <input value={this.state.gender} onChange={this.handleInputChange} name='gender' className='form-control' id='gender' />
+                        </div>
 
-                  <label htmlFor='birthday'>Birthday</label>
-                  <div className='row input-group mb-3'>
-                    <input value={this.state.birthday} onChange={this.handleInputChange} name='birthday' className='form-control' id='birthday' placeholder='ex. 1/3' />
-                  </div>
+                      </div>
+                    </div>
 
-                  <button type='button' className='btn btn-secondary' onClick={this.addAnimal}>Add Animal</button>
+                    <div className='row'>
+                      <div className='col-6'>
+                        <label htmlFor='activity'>Activity</label>
+                        <div className='input-group mb-3'>
+                          <input value={this.state.activity} onChange={this.handleInputChange} name='activity' className='form-control' id='activity' />
+                        </div>
+                      </div>
+                      <div className='col-6'>
+                        <label htmlFor='birthday'>Birthday</label>
+                        <div className='input-group mb-3'>
+                          <input value={this.state.birthday} onChange={this.handleInputChange} name='birthday' className='form-control' id='birthday' placeholder='ex. 1/3' />
+                        </div>
+                      </div>
+                    </div>
+
+
+
+                    <button type='button' className='btn btn-secondary' onClick={this.addAnimal}>Add Animal</button>
+                  </form>
                 </div>
 
                 <div className='col-9'>
