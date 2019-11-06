@@ -77,6 +77,7 @@ module.exports = {
         }
     },
 
+    // Adding animal to zoo
     addAnimal: (req, res) => {
         console.log("Animal is being added to zoo")
         console.log(req.body)

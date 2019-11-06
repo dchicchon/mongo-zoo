@@ -83,7 +83,7 @@ class Time {
             if (this.minutes === 5) {
                 this.minutes = 0;
                 this.days++
-                if (this.days === 15) {
+                if (this.days === 10) {
                     this.days = 1;
                     this.season++
                     if (this.season === 5) {

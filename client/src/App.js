@@ -167,12 +167,15 @@ class App extends Component {
                   // Now update the database!
                   API.increaseAnimalAge(this.state.animals[i]._id)
                     .then(res2 => {
-                      // Lets do this but also I want to pass in options to this.loadAnimals where 
-                      // I can decide not to do a certain function in it.
+
                       this.loadAnimals()
 
-
-                      let logs = []
+                      // Here I can load up logs for animals. Also be sure to pop the log array when it's length reaches 5  
+                      let logs = this.state.logs
+                      if (logs.length > 5) {
+                        logs.shift()
+                      }
+                      console.log(logs)
                       let message = {
                         message: `[${time.monthStamp}]: ${this.state.animals[i].name}'s birthday is today! They are now ${this.state.animals[i].age + 1}`
                       }
@@ -180,7 +183,7 @@ class App extends Component {
                       logs.push(message);
                       console.log(logs)
                       this.setState({
-                        logs
+                        logs: logs
                       })
                       // Reload the animals to reflect 
                     })
@@ -242,23 +245,32 @@ class App extends Component {
       species: this.state.species,
       gender: this.state.gender,
       activity: this.state.activity,
-      birthday: `${this.state.birthday}-0:0`
+      birthday: `${this.state.birthday}-0:0`,
+      hunger: 100,
+      stamina: 100,
+      happy: 100
     }
     console.log(data)
     this.setState({
       animalsLoading: true
     })
+
+    // Update stat functions
     API.addAnimal(data)
       .then(res => {
-        console.log("Animal added to zoo")
         API.getAnimals()
           .then(res2 => {
-            console.log(res2.data)
+
+            let genderRatio = findRatio(res2.data.animals)
+            let averageAge = average(res2.data.animals)
             this.setState({
               animals: res2.data.animals,
               speciesList: res2.data.species,
               loading: false,
-              animalsLoading: false
+              animalsLoading: false,
+
+              genderRatio,
+              averageAge,
             })
           })
       })
@@ -301,7 +313,7 @@ class App extends Component {
     return (
       <div>
         <Navbar />
-        <div className='container mt-4 mb-4'>
+        <div className='home-container mt-4 mb-4'>
 
           {this.state.loading === false ?
             <div>
@@ -367,37 +379,55 @@ class App extends Component {
                     <div>
                       <div id='table' >
 
-                        <h4>{this.state.view}</h4>
+                        <h2>{this.state.view}</h2>
 
                         <div className='row'>
-                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className="col-2 text-center"><h4>Name</h4></div>
-                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-2 text-center'><h4>Age</h4></div>
-                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-2 text-center'><h4>Species</h4></div>
-                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-2 text-center'><h4>Gender</h4></div>
-                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-2 text-center'><h4>Activity</h4></div>
-                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-2 text-center'><h4>Birthday</h4></div>
+                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className="col-1 text-center"><h4>Name</h4></div>
+                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Age</h4></div>
+                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Species</h4></div>
+                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Gender</h4></div>
+
+                          {/* Animal Stats */}
+                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Hunger</h4></div>
+                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Stamina</h4></div>
+                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Happy</h4></div>
+
+                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Activity</h4></div>
+                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Birthday</h4></div>
 
                         </div>
 
                         {this.state.animals.length > 0 ?
                           this.state.animals.map((animal, i) => (
                             <div className='row' key={i}>
-                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-2 text-center'>
+                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
                                 {animal.name}
                               </div>
-                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-2 text-center'>
+                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
                                 {animal.age}
                               </div>
-                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-2 text-center'>
+                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
                                 {animal.species}
                               </div>
-                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-2 text-center'>
+                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
                                 {animal.gender}
                               </div>
-                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-2 text-center'>
+
+                              {/* Animal Stats */}
+                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
+                                {animal.hunger}
+                              </div>
+                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
+                                {animal.stamina}
+                              </div>
+                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
+                                {animal.happy}
+                              </div>
+
+                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
                                 {animal.activity}
                               </div>
-                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-2 text-center'>
+                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
                                 {animal.birthday.substring(0, 4)}
                                 {/* {animal.birthday} */}
                               </div>
