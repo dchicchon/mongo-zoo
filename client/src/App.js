@@ -414,7 +414,9 @@ class App extends Component {
                                 {animal.activity}
                               </div>
                               <div className='col-2'>
-                                {animal.birthday.substring(0, 4)}
+                                {/* {animal.birthday.substring(0, 4)} */}
+                                {animal.birthday}
+
                               </div>
                             </div>
 
