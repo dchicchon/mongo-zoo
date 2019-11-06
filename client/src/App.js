@@ -96,8 +96,6 @@ class App extends Component {
     // Get time from database
     API.getTime()
       .then(res => {
-        // console.log("RETURN DATA")
-        // console.log(res.data)
 
         if (res.data.length === 0) {
           console.log("NO DATA")
@@ -163,18 +161,12 @@ class App extends Component {
             // Have a check to see if an animals birthday is today
             if (this.state.animals.length > 0) {
               for (let i = 0; i < this.state.animals.length; i++) {
-                // console.log(this.state.animals[i].birthday)
-                // console.log(time.monthStamp)
                 if (this.state.animals[i].birthday === time.monthStamp) {
 
                   // Making an object out of the animal will take too long, lets just modify it in the db
                   // Now update the database!
                   API.increaseAnimalAge(this.state.animals[i]._id)
                     .then(res2 => {
-                      // console.log(res2.data)
-                      // Could use the response to show the new age
-                      // console.log(time.monthStamp)
-
                       // Lets do this but also I want to pass in options to this.loadAnimals where 
                       // I can decide not to do a certain function in it.
                       this.loadAnimals()
