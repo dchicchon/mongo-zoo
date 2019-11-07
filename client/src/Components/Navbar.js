@@ -1,4 +1,5 @@
 import React from 'react';
+// import { Link } from 'react-router-dom';
 
 function Navbar() {
     return (
@@ -15,6 +16,10 @@ function Navbar() {
                 <ul className="navbar-nav mr-auto">
                     <li className="nav-item active">
                         <a className="nav-link text-light" rel='noopener noreferrer' target="_blank" href="https://github.com/dchicchon/mongo-zoo">Github<span className="sr-only">(current)</span></a>
+                    </li>
+                    <li className="nav-item active">
+                        {/* <Link to='/docs></Link> */}
+                        <a className="nav-link text-light" rel='noopener noreferrer' href="#">Docs<span className="sr-only">(current)</span></a>
                     </li>
                     {/* <li className="nav-item">
                         <a className="nav-link" href="#">Link</a>

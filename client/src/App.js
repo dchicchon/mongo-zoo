@@ -4,53 +4,11 @@ import React, { Component } from 'react';
 import Time from './Utils/Time';
 // import Animal from './Utils/Animal';
 import API from './Utils/API';
+import Stats from './Utils/Stats'
 
 // Components
-import Navbar from './Components/Navbar'
-
-// Here is my overall plan
-// Get Time and List of Animals with class
-// I don't think I can use class with react
-
-/////////////////////////////////////// 
-//////////STAT FUNCTIONS//////////////
-//////////////////////////////////////
-
-function average(arr) {
-  let sum = 0;
-  for (let i of arr) {
-    sum += i.age;
-  }
-  let num = (sum / arr.length).toFixed(2)
-  return num
-}
-
-function findRatio(arr) {
-
-  let males = 0
-  let females = 0
-  if (arr.length > 1) {
-
-    for (let i of arr) {
-      if (i.gender === 'Male') {
-        males++
-      } else {
-        females++
-      }
-    }
-    let num = (males / females).toFixed(2)
-    return num
-  }
-  return 'N/A'
-
-}
-
-
-/////////////////////////////////////// 
-//////////END STAT FUNCTIONS//////////
-//////////////////////////////////////
-
-
+import Navbar from './Components/Navbar';
+import AddAnimal from './Components/AddAnimal';
 
 class App extends Component {
 
@@ -145,7 +103,11 @@ class App extends Component {
           // I want this to happen once the time interval has started
           this.loadAnimals()
           this.increaseTime = setInterval(() => {
-            this.setState({ time })
+            this.setState({
+              time,
+              loading: false,
+              animalsLoading: false,
+            })
             time.increaseTime()
 
 
@@ -181,7 +143,7 @@ class App extends Component {
                       }
                       console.log(logs)
                       let message = {
-                        message: `[${time.monthStamp}]: ${this.state.animals[i].name}'s birthday is today! They are now ${this.state.animals[i].age + 1}`
+                        message: `[${time.monthStamp}]: ${this.state.animals[i].name}'s birthday is today! They are now ${this.state.animals[i].age + 2}`
                       }
 
                       logs.push(message);
@@ -218,14 +180,14 @@ class App extends Component {
       .then(res => {
 
         // If res.data has data => {}
-        let averageAge = average(res.data.animals)
-        let genderRatio = findRatio(res.data.animals)
+        let averageAge = Stats.average(res.data.animals)
+        let genderRatio = Stats.findRatio(res.data.animals)
 
         this.setState({
           animals: res.data.animals,
           speciesList: res.data.species,
-          loading: false,
-          animalsLoading: false,
+          // loading: false,
+          // animalsLoading: false,
 
           // stats
           averageAge,
@@ -235,13 +197,14 @@ class App extends Component {
       })
   }
 
-  handleInputChange = event => {
-    let { value, name } = event.target;
-    this.setState({
-      [name]: value
-    });
-  }
+  // handleInputChange = event => {
+  //   let { value, name } = event.target;
+  //   this.setState({
+  //     [name]: value
+  //   });
+  // }
 
+  // Moving this into a stateful component called AddAnimal.js
   addAnimal = () => {
     let data = {
       name: this.state.name,
@@ -265,8 +228,8 @@ class App extends Component {
         API.getAnimals()
           .then(res2 => {
 
-            let genderRatio = findRatio(res2.data.animals)
-            let averageAge = average(res2.data.animals)
+            let genderRatio = Stats.findRatio(res2.data.animals)
+            let averageAge = Stats.average(res2.data.animals)
             this.setState({
               animals: res2.data.animals,
               speciesList: res2.data.species,
@@ -281,13 +244,12 @@ class App extends Component {
   }
 
   // Change the view depending on which button we click. Lets change this to a functino that doesnt depend on events!
-
   getViewSpecies = () => {
     let species = this.state.view
     API.getSpecies(species)
       .then(res => {
-        let averageAge = average(res.data)
-        let genderRatio = findRatio(res.data)
+        let averageAge = Stats.average(res.data)
+        let genderRatio = Stats.findRatio(res.data)
 
         this.setState({
           view: species,
@@ -301,6 +263,7 @@ class App extends Component {
       })
   }
 
+  // Show list of animals of that species 
   getSpecies = (event) => {
     let { value: species } = event.target
     console.log(species)
@@ -315,8 +278,8 @@ class App extends Component {
 
           // STATS
           // Check top of the page to see stat functions
-          let averageAge = average(res.data)
-          let genderRatio = findRatio(res.data)
+          let averageAge = Stats.average(res.data)
+          let genderRatio = Stats.findRatio(res.data)
 
           this.setState({
             view: species,
@@ -342,80 +305,29 @@ class App extends Component {
           {this.state.loading === false ?
             <div>
               <div className='row'>
-                <div className='col-3'>
-                  <h1>The Zoo</h1>
-                </div>
-                <div className='col-9'>
-                  <h2>{this.state.time.prettyTime}</h2>
+                {/* <div className='col-3'> */}
+                {/* <h1>The Zoo</h1> */}
+                {/* </div> */}
+                <div className='col-12 text-center'>
+
+                  {/* I want to hide the page until the time comes back */}
+                  <h2 className='display-2-xl display-4-sm'>{this.state.time.prettyTime}</h2>
                 </div>
               </div>
 
               {/* This will be the AddAnimal Component in the future. Should have dropdown menus for several parts */}
               <div className='row'>
-                <div className='col-3 mb-4'>
 
-                  <form>
+                {/* Pass in props? I think I want to pass in state from this one somehow */}
+                <AddAnimal />
 
-                    <div className='row'>
-                      <div className='col-6'>
-                        <label htmlFor='name'>Name</label>
-                        <div className='input-group mb-3'>
-                          <input value={this.state.name} onChange={this.handleInputChange} name='name' className="form-control" id='name' />
-                        </div>
-                      </div>
-                      <div className='col-6'>
-                        <label htmlFor='age'>Age</label>
-                        <div className='input-group mb-3'>
-                          <input value={this.state.age} onChange={this.handleInputChange} name='age' className="form-control" id='age' />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className='row'>
-                      <div className='col-6'>
-                        <label htmlFor='species'>Species</label>
-                        <div className='input-group mb-3'>
-                          <input value={this.state.species} onChange={this.handleInputChange} name='species' className='form-control' id='species' />
-                        </div>
-
-                      </div>
-                      <div className='col-6'>
-                        <label htmlFor='gender'>Gender</label>
-                        <div className='input-group mb-3'>
-                          <input value={this.state.gender} onChange={this.handleInputChange} name='gender' className='form-control' id='gender' />
-                        </div>
-
-                      </div>
-                    </div>
-
-                    <div className='row'>
-                      <div className='col-6'>
-                        <label htmlFor='activity'>Activity</label>
-                        <div className='input-group mb-3'>
-                          <input value={this.state.activity} onChange={this.handleInputChange} name='activity' className='form-control' id='activity' />
-                        </div>
-                      </div>
-                      <div className='col-6'>
-                        <label htmlFor='birthday'>Birthday</label>
-                        <div className='input-group mb-3'>
-                          <input value={this.state.birthday} onChange={this.handleInputChange} name='birthday' className='form-control' id='birthday' placeholder='ex. 1/3' />
-                        </div>
-                      </div>
-                    </div>
-
-
-
-                    <button type='button' className='btn btn-secondary' onClick={this.addAnimal}>Add Animal</button>
-                  </form>
-                </div>
-
-                <div className='col-9'>
+                <div className='col-xl-9 col-sm-12'>
                   <h4>Select an Enclosure to inspect</h4>
                   <div className='row mb-3'>
-                    <button type='button' className='btn btn-secondary col-1 ml-2' value='All' onClick={this.getSpecies}>All</button>
+                    <button type='button' className='btn btn-secondary col-xl-2 col-sm-2 ml-2 mr-2' value='All' onClick={this.getSpecies}>All</button>
                     {this.state.speciesList.length > 0 ?
                       this.state.speciesList.map((species, i) => (
-                        <button type='button' className='btn btn-secondary col-1 ml-2' value={species} key={i} onClick={this.getSpecies}>{species}</button>
+                        <button type='button' className='btn btn-secondary col-xl-2 col-sm-2 ml-2 mr-2' value={species} key={i} onClick={this.getSpecies}>{species}</button>
                       ))
                       : ""}
 
