@@ -314,6 +314,19 @@ class App extends Component {
 
   addAnimal = () => {
     console.log(this.state.species)
+    let data = {
+      species: this.state.species
+    }
+    API.addAnimal(data)
+      .then(res => {
+        console.log(res.data)
+        if (this.state.view === 'All') {
+          this.loadAnimals()
+        } else {
+          this.getViewSpecies()
+        }
+        console.log("animal added to zoo")
+      })
   }
 
   render() {
@@ -347,7 +360,7 @@ class App extends Component {
       // inline style={{height: '100%'}}
       <div>
         <Navbar sideBarHandler={this.sideBarHandler} />
-        <SideBar show={this.state.sideBarOpen} addAnimal={this.addAnimal} handleChange={this.handleInputChange}/>
+        <SideBar show={this.state.sideBarOpen} addAnimal={this.addAnimal} handleChange={this.handleInputChange} />
         {/* {sideBar} */}
         {backdrop}
         {/* <Backdrop /> */}

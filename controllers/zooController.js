@@ -78,10 +78,24 @@ module.exports = {
     },
 
     // Adding animal to zoo
+
     addAnimal: (req, res) => {
         console.log("Animal is being added to zoo")
-        console.log(req.body)
-        Animal.create(req.body)
+        let { species } = req.body
+        let newAnimal = {
+            name: 'Jimmy',
+            age: (Math.floor(Math.random() * 10) + 1),
+            species,
+            gender: "Male",
+            activity: "Playing",
+            hunger: 50,
+            stamina: 50,
+            happy: 50
+        }
+
+        // have a randomizer function here to generate an animal
+
+        Animal.create(newAnimal)
             .then(dbAnimal => {
                 console.log("Animal Created")
                 console.log(dbAnimal)
