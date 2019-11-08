@@ -7,8 +7,9 @@ import API from './Utils/API';
 import Stats from './Utils/Stats'
 
 // Components
-import Navbar from './Components/Navbar';
-import AddAnimal from './Components/AddAnimal';
+import Navbar from './Components/Navbar2';
+import SideBar from './Components/Sidebar';
+import Backdrop from './Components/Backdrop';
 
 class App extends Component {
 
@@ -43,6 +44,10 @@ class App extends Component {
     // Stats
     averageAge: '',
     genderRatio: '',
+
+    // Sidebar
+    sideBarOpen: false,
+    backDropOpen: false
 
   }
 
@@ -294,12 +299,36 @@ class App extends Component {
     }
   }
 
+  backDropHandler = () => {
+    this.setState({
+      sideBarOpen: false
+    })
+  }
+  sideBarHandler = () => {
+    this.setState((prevState) => {
+      return { sideBarOpen: !prevState.sideBarOpen }
+    })
+  }
+
 
   render() {
 
+    // let sideBar;
+    let backdrop;
+
+    if (this.state.sideBarOpen) {
+      // sideBar = <SideBar />
+      backdrop = <Backdrop click={this.backDropHandler} />
+    }
+
     return (
+      // inline style={{height: '100%'}}
       <div>
-        <Navbar />
+        <Navbar sideBarHandler={this.sideBarHandler} />
+        <SideBar show={this.state.sideBarOpen} />
+        {/* {sideBar} */}
+        {backdrop}
+        {/* <Backdrop /> */}
         <div className='home-container mt-4 mb-4'>
 
           {this.state.loading === false ?
@@ -319,9 +348,9 @@ class App extends Component {
               <div className='row'>
 
                 {/* Pass in props? I think I want to pass in state from this one somehow */}
-                <AddAnimal />
+                {/* <AddAnimal /> */}
 
-                <div className='col-xl-9 col-sm-12'>
+                <div className='col-xl-12 col-sm-12'>
                   <h4>Select an Enclosure to inspect</h4>
                   <div className='row mb-3'>
                     <button type='button' className='btn btn-secondary col-xl-2 col-sm-2 ml-2 mr-2' value='All' onClick={this.getSpecies}>All</button>
@@ -375,25 +404,22 @@ class App extends Component {
                               {/* Begin Animal Stats */}
                               <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
 
-                                {animal.hunger}
                                 <div className="progress">
-                                  <div className="progress-bar bg-info" role="progressbar" style={{ width: animal.hunger }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                  <div className="progress-bar bg-info" role="progressbar" style={{ width: `${animal.hunger}%` }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">{animal.hunger}</div>
                                 </div>
 
                               </div>
                               <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
 
-                                {animal.stamina}
                                 <div className="progress">
-                                  <div className="progress-bar bg-info" role="progressbar" style={{ width: animal.stamina }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                  <div className="progress-bar bg-info" role="progressbar" style={{ width: `${animal.stamina}%` }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">{animal.stamina}</div>
                                 </div>
 
                               </div>
                               <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
 
-                                {animal.happy}
                                 <div className="progress">
-                                  <div className="progress-bar bg-info" role="progressbar" style={{ width: animal.happy }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                  <div className="progress-bar bg-info" role="progressbar" style={{ width: `${animal.happy}%` }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">{animal.happy}</div>
                                 </div>
 
                               </div>
