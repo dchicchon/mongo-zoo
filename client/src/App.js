@@ -24,12 +24,7 @@ class App extends Component {
     speciesList: [],
 
     // Add animal
-    name: '',
-    age: '',
     species: '',
-    gender: '',
-    activity: '',
-    birthday: '',
 
     // View
     view: 'All',
@@ -310,6 +305,16 @@ class App extends Component {
     })
   }
 
+  handleInputChange = event => {
+    let { name, value } = event.target
+    this.setState({
+      [name]: value
+    })
+  }
+
+  addAnimal = () => {
+    console.log(this.state.species)
+  }
 
   render() {
 
@@ -321,11 +326,28 @@ class App extends Component {
       backdrop = <Backdrop click={this.backDropHandler} />
     }
 
+    function gender(type) {
+      if (type === 'Female') {
+        return <i className="fas fa-venus"></i>
+      } else {
+        return <i className="fas fa-mars"></i>
+      }
+    }
+    function activity(action) {
+      if (action === 'Playing') {
+        return <i className="fas fa-running"></i>
+      } else if (action === 'Eating') {
+        return <i className="fas fa-utensils"></i>
+      } else {
+        return <i className="fas fa-bed"></i>
+      }
+    }
+
     return (
       // inline style={{height: '100%'}}
       <div>
         <Navbar sideBarHandler={this.sideBarHandler} />
-        <SideBar show={this.state.sideBarOpen} />
+        <SideBar show={this.state.sideBarOpen} addAnimal={this.addAnimal} handleChange={this.handleInputChange}/>
         {/* {sideBar} */}
         {backdrop}
         {/* <Backdrop /> */}
@@ -353,10 +375,10 @@ class App extends Component {
                 <div className='col-xl-12 col-sm-12'>
                   <h4>Select an Enclosure to inspect</h4>
                   <div className='row mb-3'>
-                    <button type='button' className='btn btn-secondary col-xl-2 col-sm-2 ml-2 mr-2' value='All' onClick={this.getSpecies}>All</button>
+                    <button type='button' className='btn btn-secondary col-xl-1 col-sm-2 ml-2 mr-2' value='All' onClick={this.getSpecies}>All</button>
                     {this.state.speciesList.length > 0 ?
                       this.state.speciesList.map((species, i) => (
-                        <button type='button' className='btn btn-secondary col-xl-2 col-sm-2 ml-2 mr-2' value={species} key={i} onClick={this.getSpecies}>{species}</button>
+                        <button type='button' className='btn btn-secondary col-xl-1 col-sm-2 ml-2 mr-2' value={species} key={i} onClick={this.getSpecies}>{species}</button>
                       ))
                       : ""}
 
@@ -380,7 +402,7 @@ class App extends Component {
                           <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Happy</h4></div>
 
                           <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Activity</h4></div>
-                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Birthday</h4></div>
+                          {/* <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Birthday</h4></div> */}
 
                         </div>
 
@@ -397,26 +419,26 @@ class App extends Component {
                                 {animal.species}
                               </div>
                               <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
-                                {animal.gender}
+                                {gender(animal.gender)}
                               </div>
 
                               {/* =============================================================== */}
                               {/* Begin Animal Stats */}
-                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
+                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }} className='col-1 text-center'>
 
                                 <div className="progress">
                                   <div className="progress-bar bg-info" role="progressbar" style={{ width: `${animal.hunger}%` }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">{animal.hunger}</div>
                                 </div>
 
                               </div>
-                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
+                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }} className='col-1 text-center'>
 
                                 <div className="progress">
                                   <div className="progress-bar bg-info" role="progressbar" style={{ width: `${animal.stamina}%` }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">{animal.stamina}</div>
                                 </div>
 
                               </div>
-                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
+                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }} className='col-1 text-center'>
 
                                 <div className="progress">
                                   <div className="progress-bar bg-info" role="progressbar" style={{ width: `${animal.happy}%` }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">{animal.happy}</div>
@@ -428,12 +450,11 @@ class App extends Component {
                               {/* =============================================================== */}
 
                               <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
-                                {animal.activity}
+                                {activity(animal.activity)}
                               </div>
-                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
+                              {/* <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
                                 {animal.birthday.substring(0, 4)}
-                                {/* {animal.birthday} */}
-                              </div>
+                              </div> */}
                             </div>
 
                           ))
