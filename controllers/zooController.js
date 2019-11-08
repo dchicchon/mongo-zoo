@@ -2,10 +2,13 @@ const Animal = require("../models/Animal")
 const Time = require("../models/Time")
 
 const nameGenerator = (sex) => {
-    if (sex === 'male') {
-        let namesArr = [`James`, `Reese`, `Josh`, `Jackson`, ``];
+    if (sex === 'Male') {
+        let namesArr = [`James`, `Reese`, `Josh`, `Jackson`, `Isaiah`, `Cooper`, `Bryan`];
+        return namesArr[Math.floor(Math.random() * namesArr.length)]
+
     } else {
-        let namesArr = []
+        let namesArr = [`Leah`, `Andrea`, `Jacky`, `Gilda`, `Cathy`, `Harper`, `Betty`]
+        return namesArr[Math.floor(Math.random() * namesArr.length)]
     }
 }
 
@@ -87,25 +90,31 @@ module.exports = {
 
     // Adding animal to zoo. For some reason if I don't move the selection, species in undefined
     addAnimal: (req, res) => {
-        console.log("Animal is being added to zoo")
         let { species } = req.body
         if (!species) {
             species = 'Bat'
         }
+
+        let sexArr = ['Male', "Female"];
+        let sex = sexArr[Math.floor(Math.random() * sexArr.length)];
+
+        let activityArr = ['Sleeping', 'Eating', 'Playing'];
+        let activity = activityArr[Math.floor(Math.random() * activityArr.length)];
+
         // Add randomizer for name, gender, and activity
         let newAnimal = {
-            name: 'Jimmy',
+            name: nameGenerator(sex),
             age: (Math.floor(Math.random() * 10) + 1),
             species,
-            gender: "Male",
-            activity: "Playing",
+            // Change this to sex later
+            sex,
+            activity: activity,
             hunger: 50,
             stamina: 50,
             happy: 50
         }
 
         // have a randomizer function here to generate an animal
-
         Animal.create(newAnimal)
             .then(dbAnimal => {
                 console.log("Animal Created")

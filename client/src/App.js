@@ -339,7 +339,7 @@ class App extends Component {
       backdrop = <Backdrop click={this.backDropHandler} />
     }
 
-    function gender(type) {
+    function sex(type) {
       if (type === 'Female') {
         return <i className="fas fa-venus"></i>
       } else {
@@ -432,7 +432,7 @@ class App extends Component {
                                 {animal.species}
                               </div>
                               <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
-                                {gender(animal.gender)}
+                                {sex(animal.sex)}
                               </div>
 
                               {/* =============================================================== */}
@@ -440,7 +440,7 @@ class App extends Component {
                               <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }} className='col-1 text-center'>
 
                                 <div className="progress">
-                                  <div className="progress-bar bg-info" role="progressbar" style={{ width: `${animal.hunger}%` }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">{animal.hunger}</div>
+                                  <div className="progress-bar bg-info text-center" role="progressbar" style={{ width: `${animal.hunger}%` }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">{animal.hunger}</div>
                                 </div>
 
                               </div>
