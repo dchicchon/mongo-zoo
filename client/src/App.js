@@ -183,6 +183,9 @@ class App extends Component {
         let averageAge = Stats.average(res.data.animals)
         let genderRatio = Stats.findRatio(res.data.animals)
 
+        console.log(averageAge)
+        console.log(genderRatio)
+
         this.setState({
           animals: res.data.animals,
           speciesList: res.data.species,
@@ -279,6 +282,9 @@ class App extends Component {
           // Check top of the page to see stat functions
           let averageAge = Stats.average(res.data)
           let genderRatio = Stats.findRatio(res.data)
+
+          console.log(averageAge)
+          console.log(genderRatio)
 
           this.setState({
             view: species,

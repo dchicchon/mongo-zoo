@@ -16,7 +16,7 @@ export default {
         if (arr.length > 1) {
 
             for (let i of arr) {
-                if (i.gender === 'Male') {
+                if (i.sex === 'Male') {
                     males++
                 } else {
                     females++
