@@ -1,6 +1,14 @@
 const Animal = require("../models/Animal")
 const Time = require("../models/Time")
 
+const nameGenerator = (sex) => {
+    if (sex === 'male') {
+        let namesArr = [`James`, `Reese`, `Josh`, `Jackson`, ``];
+    } else {
+        let namesArr = []
+    }
+}
+
 module.exports = {
 
     ////////////////////// 
@@ -77,11 +85,14 @@ module.exports = {
         }
     },
 
-    // Adding animal to zoo
-
+    // Adding animal to zoo. For some reason if I don't move the selection, species in undefined
     addAnimal: (req, res) => {
         console.log("Animal is being added to zoo")
         let { species } = req.body
+        if (!species) {
+            species = 'Bat'
+        }
+        // Add randomizer for name, gender, and activity
         let newAnimal = {
             name: 'Jimmy',
             age: (Math.floor(Math.random() * 10) + 1),
