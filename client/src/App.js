@@ -235,7 +235,6 @@ class App extends Component {
               speciesList: res2.data.species,
               loading: false,
               animalsLoading: false,
-
               genderRatio,
               averageAge,
             })
@@ -312,14 +311,17 @@ class App extends Component {
     })
   }
 
+  // BUG: Buttons not generating when creating new animals. Need to re-render the speciesList
   addAnimal = () => {
-    console.log(this.state.species)
     let data = {
       species: this.state.species
     }
     API.addAnimal(data)
       .then(res => {
         console.log(res.data)
+        this.setState({
+          speciesList: res.data.species
+        })
         if (this.state.view === 'All') {
           this.loadAnimals()
         } else {

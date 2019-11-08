@@ -117,9 +117,19 @@ module.exports = {
         // have a randomizer function here to generate an animal
         Animal.create(newAnimal)
             .then(dbAnimal => {
+                // But what if I also wanted to return a list of all the animals back?
                 console.log("Animal Created")
                 console.log(dbAnimal)
-                res.json(dbAnimal)
+                // res.json(dbAnimal)
+                Animal.find()
+                    .then(dbAnimals => {
+                        let species = dbAnimals.map(animal => animal.species).filter((value, index, self) => self.indexOf(value) === index)
+                        let animalData = {
+                            animals: dbAnimals,
+                            species
+                        }
+                        res.json(animalData)
+                    })
             })
     },
 
