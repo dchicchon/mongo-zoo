@@ -24,6 +24,11 @@ function Navbar(props) {
                     </li>
                 </ul>
             </div>
+
+            {/* This is your bank */}
+            <div id='bank'>
+                Bank: $10,000
+            </div>
         </nav>
     )
 }

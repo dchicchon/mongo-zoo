@@ -11,6 +11,8 @@ import Navbar from './Components/Navbar2';
 import SideBar from './Components/Sidebar';
 import Backdrop from './Components/Backdrop';
 
+
+// Eventually this will be the hub for clientside routing
 class App extends Component {
 
   state = {
@@ -56,16 +58,17 @@ class App extends Component {
       .then(res => {
 
         if (res.data.length === 0) {
-          console.log("NO DATA")
+          // console.log("NO DATA")
           let time = new Time()
 
           // Create Time in databased
           API.createTime(time)
             .then(res2 => {
+
+              // This is the function that will control the majority of the apps functionality
+              // Here I set time in state to control the behavior of other components
               this.increaseTime = setInterval(() => {
 
-                // Here I set time in state to control the behavior of other components
-                // Update Time here as well
                 let timeData = {        // we must access the new seconds to store them 
                   _id: res2.data._id,  // in our database to keep it up to date
                   seconds: time.seconds,
@@ -98,10 +101,10 @@ class App extends Component {
           // Create time object based off of the data received
           let time = new Time(seconds, minutes, days, season, year)
 
-          // Set interval for time, This will constantly update the database
-          // This will also change the state of the App component
-          // I want this to happen once the time interval has started
           this.loadAnimals()
+          
+          // Set interval for time, This will constantly update the database
+          // Again, this is the most important part of the app
           this.increaseTime = setInterval(() => {
             this.setState({
               time,
@@ -120,6 +123,7 @@ class App extends Component {
               year: time.year
             }
 
+            // BIRTHDAY CHECK
             // Have a check to see if an animals birthday is today
             if (this.state.animals.length > 0) {
               for (let i = 0; i < this.state.animals.length; i++) {
@@ -157,6 +161,9 @@ class App extends Component {
                 }
               }
             }
+
+            // TICK DOWN ANIMAL STATS BASED OF ACTIVITY
+            
 
             API.updateTime(timeData)
               .then(res3 => {
@@ -367,6 +374,7 @@ class App extends Component {
     return (
       // inline style={{height: '100%'}}
       <div>
+        {/* Pass in Bank variable as well */}
         <Navbar sideBarHandler={this.sideBarHandler} />
         <SideBar show={this.state.sideBarOpen} addAnimal={this.addAnimal} handleChange={this.handleInputChange} />
         {/* {sideBar} */}
@@ -412,10 +420,10 @@ class App extends Component {
                         <h2>{this.state.view}</h2>
 
                         <div className='row'>
-                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className="col-1 text-center"><h4>Name</h4></div>
+                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className="col-1 text-center"><h4>Animal</h4></div>
                           <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Age</h4></div>
                           <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Species</h4></div>
-                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Sex</h4></div>
+                          {/* <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Sex</h4></div> */}
 
                           {/* Animal Stats */}
                           <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Hunger</h4></div>
@@ -431,7 +439,7 @@ class App extends Component {
                           this.state.animals.map((animal, i) => (
                             <div className='row' key={i}>
                               <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
-                                {animal.name}
+                                {animal.name} {sex(animal.sex)}
                               </div>
                               <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
                                 {animal.age}
@@ -439,9 +447,9 @@ class App extends Component {
                               <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
                                 {animal.species}
                               </div>
-                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
+                              {/* <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
                                 {sex(animal.sex)}
-                              </div>
+                              </div> */}
 
                               {/* =============================================================== */}
                               {/* Begin Animal Stats */}
