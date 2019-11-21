@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 // Utils
 import Time from './Utils/Time';
-// import Animal from './Utils/Animal';
 import API from './Utils/API';
 import Stats from './Utils/Stats'
 
@@ -10,7 +9,9 @@ import Stats from './Utils/Stats'
 import Navbar from './Components/Navbar2';
 import SideBar from './Components/Sidebar';
 import Backdrop from './Components/Backdrop';
-
+import Statlogs from './Components/Statlogs';
+import Animal from './Components/Animal';
+import Graph from './Components/Graph';
 
 // Eventually this will be the hub for clientside routing
 class App extends Component {
@@ -21,7 +22,6 @@ class App extends Component {
     animalsLoading: true,
 
     // List of animals
-    // May replace this list with objects created from Class rather than res.data
     animals: [],
     speciesList: [],
 
@@ -81,7 +81,7 @@ class App extends Component {
                 this.setState({ time })
                 API.updateTime(timeData)
                   .then(res => {
-                    console.log("New Time updated")
+                    // console.log("New Time updated")
                   })
                 time.increaseTime()
 
@@ -102,7 +102,7 @@ class App extends Component {
           let time = new Time(seconds, minutes, days, season, year)
 
           this.loadAnimals()
-          
+
           // Set interval for time, This will constantly update the database
           // Again, this is the most important part of the app
           this.increaseTime = setInterval(() => {
@@ -145,13 +145,13 @@ class App extends Component {
                       if (logs.length > 5) {
                         logs.shift()
                       }
-                      console.log(logs)
+                      // console.log(logs)
                       let message = {
                         message: `[${time.monthStamp}]: ${this.state.animals[i].name}'s birthday is today! They are now ${this.state.animals[i].age + 2}`
                       }
 
                       logs.push(message);
-                      console.log(logs)
+                      // console.log(logs)
                       this.setState({
                         logs: logs
                       })
@@ -163,7 +163,7 @@ class App extends Component {
             }
 
             // TICK DOWN ANIMAL STATS BASED OF ACTIVITY
-            
+
 
             API.updateTime(timeData)
               .then(res3 => {
@@ -190,8 +190,8 @@ class App extends Component {
         let averageAge = Stats.average(res.data.animals)
         let genderRatio = Stats.findRatio(res.data.animals)
 
-        console.log(averageAge)
-        console.log(genderRatio)
+        // console.log(averageAge)
+        // console.log(genderRatio)
 
         this.setState({
           animals: res.data.animals,
@@ -207,14 +207,6 @@ class App extends Component {
       })
   }
 
-  // handleInputChange = event => {
-  //   let { value, name } = event.target;
-  //   this.setState({
-  //     [name]: value
-  //   });
-  // }
-
-  // Moving this into a stateful component called AddAnimal.js
   addAnimal = () => {
     let data = {
       name: this.state.name,
@@ -227,7 +219,7 @@ class App extends Component {
       stamina: 100,
       happy: 100
     }
-    console.log(data)
+    // console.log(data)
     this.setState({
       animalsLoading: true
     })
@@ -275,23 +267,23 @@ class App extends Component {
   // Show list of animals of that species 
   getSpecies = (event) => {
     let { value: species } = event.target
-    console.log(species)
+    // console.log(species)
     if (species !== this.state.view) {
       this.setState({
         animalsLoading: true
       })
       API.getSpecies(species)
         .then(res => {
-          console.log("Got Species")
-          console.log(res.data)
+          // console.log("Got Species")
+          // console.log(res.data)
 
           // STATS
           // Check top of the page to see stat functions
           let averageAge = Stats.average(res.data)
           let genderRatio = Stats.findRatio(res.data)
 
-          console.log(averageAge)
-          console.log(genderRatio)
+          // console.log(averageAge)
+          // console.log(genderRatio)
 
           this.setState({
             view: species,
@@ -346,48 +338,35 @@ class App extends Component {
 
   render() {
 
-    // let sideBar;
     let backdrop;
 
     if (this.state.sideBarOpen) {
-      // sideBar = <SideBar />
       backdrop = <Backdrop click={this.backDropHandler} />
     }
 
-    function sex(type) {
-      if (type === 'Female') {
-        return <i className="fas fa-venus"></i>
-      } else {
-        return <i className="fas fa-mars"></i>
-      }
+    // Styles
+    let headerStyle = {
+      backgroundColor: "#2f4f4f",
+      border: "1px solid rgb(57,58,59)",
+      padding: '5px'
     }
-    function activity(action) {
-      if (action === 'Playing') {
-        return <i className="fas fa-running"></i>
-      } else if (action === 'Eating') {
-        return <i className="fas fa-utensils"></i>
-      } else {
-        return <i className="fas fa-bed"></i>
-      }
+
+    let tableStyle = {
+      backgroundColor: '#2f4f4f',
+      border: '7px solid rgb(57,58,59)'
     }
 
     return (
-      // inline style={{height: '100%'}}
       <div>
         {/* Pass in Bank variable as well */}
         <Navbar sideBarHandler={this.sideBarHandler} />
         <SideBar show={this.state.sideBarOpen} addAnimal={this.addAnimal} handleChange={this.handleInputChange} />
-        {/* {sideBar} */}
         {backdrop}
-        {/* <Backdrop /> */}
         <div className='home-container mt-4 mb-4'>
 
           {this.state.loading === false ?
             <div>
               <div className='row'>
-                {/* <div className='col-3'> */}
-                {/* <h1>The Zoo</h1> */}
-                {/* </div> */}
                 <div className='col-12 text-center'>
 
                   {/* I want to hide the page until the time comes back */}
@@ -395,12 +374,8 @@ class App extends Component {
                 </div>
               </div>
 
-              {/* This will be the AddAnimal Component in the future. Should have dropdown menus for several parts */}
               <div className='row'>
-
-                {/* Pass in props? I think I want to pass in state from this one somehow */}
-                {/* <AddAnimal /> */}
-
+                {/* List of Animal Enclosures */}
                 <div className='col-xl-12 col-sm-12'>
                   <h4>Select an Enclosure to inspect</h4>
                   <div className='row mb-3'>
@@ -413,117 +388,56 @@ class App extends Component {
 
                   </div>
 
+                  {/* Maybe there should be main stats then there should be enclosure stats? */}
+                  <h2>{this.state.view}</h2>
+                  <Statlogs
+                    animals={this.state.animals}
+                    genderRatio={this.state.genderRatio}
+                    averageAge={this.state.averageAge}
+                    logs={this.state.logs}
+                    message={this.state.message}
+                  />
                   {this.state.animalsLoading === false ?
-                    <div>
-                      <div id='table' >
+                    <div className='row'>
 
-                        <h2>{this.state.view}</h2>
-
+                      {/* This will be col-6 */}
+                      <div className='col-xl-6' style={tableStyle} id='table' >
                         <div className='row'>
-                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className="col-1 text-center"><h4>Animal</h4></div>
-                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Age</h4></div>
-                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Species</h4></div>
-                          {/* <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Sex</h4></div> */}
-
-                          {/* Animal Stats */}
-                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Hunger</h4></div>
-                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Stamina</h4></div>
-                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Happy</h4></div>
-
-                          <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Activity</h4></div>
-                          {/* <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'><h4>Birthday</h4></div> */}
+                          <div style={headerStyle} className="col-xl-2 col-sm-1 text-center"><h4>Animal</h4></div>
+                          <div style={headerStyle} className='col-xl-2 col-sm-1 text-center'><h4>Age</h4></div>
+                          {/* <div style={headerStyle} className='col-xl-1 col-sm-1 text-center'><h4>Species</h4></div> */}
+                          <div style={headerStyle} className='col-xl-2 col-sm-1 text-center'><h4>Hunger</h4></div>
+                          <div style={headerStyle} className='col-xl-2 col-sm-1 text-center'><h4>Stamina</h4></div>
+                          <div style={headerStyle} className='col-xl-2 col-sm-1 text-center'><h4>Happy</h4></div>
+                          <div style={headerStyle} className='col-xl-2 col-sm-1 text-center'><h4>Activity</h4></div>
 
                         </div>
 
                         {this.state.animals.length > 0 ?
                           this.state.animals.map((animal, i) => (
-                            <div className='row' key={i}>
-                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
-                                {animal.name} {sex(animal.sex)}
-                              </div>
-                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
-                                {animal.age}
-                              </div>
-                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
-                                {animal.species}
-                              </div>
-                              {/* <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
-                                {sex(animal.sex)}
-                              </div> */}
 
-                              {/* =============================================================== */}
-                              {/* Begin Animal Stats */}
-                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }} className='col-1 text-center'>
-
-                                <div className="progress">
-                                  <div className="progress-bar bg-info text-center" role="progressbar" style={{ width: `${animal.hunger}%` }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">{animal.hunger}</div>
-                                </div>
-
-                              </div>
-                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }} className='col-1 text-center'>
-
-                                <div className="progress">
-                                  <div className="progress-bar bg-info" role="progressbar" style={{ width: `${animal.stamina}%` }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">{animal.stamina}</div>
-                                </div>
-
-                              </div>
-                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }} className='col-1 text-center'>
-
-                                <div className="progress">
-                                  <div className="progress-bar bg-info" role="progressbar" style={{ width: `${animal.happy}%` }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">{animal.happy}</div>
-                                </div>
-
-                              </div>
-
-                              {/* End Animal Stats */}
-                              {/* =============================================================== */}
-
-                              <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
-                                {activity(animal.activity)}
-                              </div>
-                              {/* <div style={{ backgroundColor: "#2f4f4f", border: "1px solid rgb(57,58,59)", padding: '5px' }} className='col-1 text-center'>
-                                {animal.birthday.substring(0, 4)}
-                              </div> */}
-                            </div>
+                            // Check Animal component for more detail, but basically this is each entry of animal
+                            <Animal
+                              key={i}
+                              animal={animal}
+                            />
 
                           ))
                           : <div className='row'>No animals in zoo yet</div>}
 
                       </div>
-                      <div className='mt-3 row'>
-                        {/* Stats */}
-                        <div style={{ backgroundColor: "#2f4f4f", border: '7px solid rgb(57,58,59)' }} className='col-6' id='stats'>
-                          <h2>Stats</h2>
-                          <h5>Total Inhabitants: {this.state.animals.length}</h5>
-                          <h5>Male to Female Ratio: {this.state.genderRatio} </h5>
-                          <h5>Average Age: {this.state.averageAge}  </h5>
-                        </div>
-                        {/* Message Logs */}
-                        {/* #56A3A6: Blue */}
-                        <div style={{ backgroundColor: "#2f4f4f", border: '7px solid rgb(57,58,59)' }} className='col-6' id='logs'>
 
-                          <h2>Logs</h2>
-                          {this.state.logs.length > 0 ?
-                            this.state.logs.map((log, i) => (
-                              <p key={i}>{log.message}</p>
-                            ))
-                            : ''}
-                          {this.state.message}
-                        </div>
-                      </div>
+                      {/* Graph */}
+                      <Graph />
 
-                      {/* There should be a graph for the total zoo and for each enclosure */}
-                      < div id='graph' >
-
-                      </div>
                     </div>
                     :
                     <div className="spinner-border text-light" role="status">
                       <span className="sr-only">Loading...</span>
-                    </div>}
+                    </div>
+                  }
 
                 </div>
-
 
               </div>
 

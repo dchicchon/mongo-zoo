@@ -71,32 +71,27 @@ class Time {
     }
 
     increaseTime() {
-        // Unnecessary I dont know how to spell this
-        // this.clock = `${this.minutes}:${this.seconds}`
-        // this.monthDate = `${this.season}/${this.days}`
-        // this.yearDate = `${this.season}/${this.days}/${this.year}`
-        // this.timeStamp = `${this.season}/${this.days}/${this.year}-${this.minutes}:${this.seconds}`
+        this.seconds++
 
-        if (this.seconds === 59) {
+        if (this.seconds === 60) {
             this.seconds = 0;
             this.minutes++
-            if (this.minutes === 5) {
-                this.minutes = 0;
-                this.days++
-                if (this.days === 10) {
-                    this.days = 1;
-                    this.season++
-                    if (this.season === 5) {
-                        this.season = 1;
-                        this.year++
-                    }
-                }
-            }
-        } else {
-            this.seconds++
+        }
+        if (this.minutes === 5) {
+            this.minutes = 0;
+            this.days++
+        }
+
+        if (this.days === 10) {
+            this.days = 1;
+            this.season++
+        }
+
+        if (this.season === 5) {
+            this.season = 1;
+            this.year++
         }
     }
-
 }
 
 export default Time;
