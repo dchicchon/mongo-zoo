@@ -10,7 +10,8 @@ import Navbar from './Components/Navbar2';
 import SideBar from './Components/Sidebar';
 import Backdrop from './Components/Backdrop';
 import Statlogs from './Components/Statlogs';
-import Animal from './Components/Animal';
+// import Animal from './Components/Animal';
+import Animals from './Components/Animals';
 import Graph from './Components/Graph';
 
 // Eventually this will be the hub for clientside routing
@@ -345,16 +346,7 @@ class App extends Component {
     }
 
     // Styles
-    let headerStyle = {
-      backgroundColor: "#2f4f4f",
-      border: "1px solid rgb(57,58,59)",
-      padding: '5px'
-    }
 
-    let tableStyle = {
-      backgroundColor: '#2f4f4f',
-      border: '7px solid rgb(57,58,59)'
-    }
 
     return (
       <div>
@@ -369,13 +361,13 @@ class App extends Component {
               <div className='row'>
                 <div className='col-12 text-center'>
 
-                  {/* I want to hide the page until the time comes back */}
+                  {/* TIME AT TOP */}
                   <h2 className='display-2-xl display-4-sm'>{this.state.time.prettyTime}</h2>
                 </div>
               </div>
 
+              {/* BUTTONS */}
               <div className='row'>
-                {/* List of Animal Enclosures */}
                 <div className='col-xl-12 col-sm-12'>
                   <h4>Select an Enclosure to inspect</h4>
                   <div className='row mb-3'>
@@ -388,8 +380,10 @@ class App extends Component {
 
                   </div>
 
-                  {/* Maybe there should be main stats then there should be enclosure stats? */}
+                  {/* VIEW TITLE */}
                   <h2>{this.state.view}</h2>
+
+                  {/* TOP TWO BOXES */}
                   <Statlogs
                     animals={this.state.animals}
                     genderRatio={this.state.genderRatio}
@@ -397,52 +391,27 @@ class App extends Component {
                     logs={this.state.logs}
                     message={this.state.message}
                   />
+
                   {this.state.animalsLoading === false ?
+
+                    // BOTTOM TWO BOXES
                     <div className='row'>
+                      <Animals
+                        animals={this.state.animals}
+                      />
 
-                      {/* This will be col-6 */}
-                      <div className='col-xl-6' style={tableStyle} id='table' >
-                        <div className='row'>
-                          <div style={headerStyle} className="col-xl-2 col-sm-1 text-center"><h4>Animal</h4></div>
-                          <div style={headerStyle} className='col-xl-2 col-sm-1 text-center'><h4>Age</h4></div>
-                          {/* <div style={headerStyle} className='col-xl-1 col-sm-1 text-center'><h4>Species</h4></div> */}
-                          <div style={headerStyle} className='col-xl-2 col-sm-1 text-center'><h4>Hunger</h4></div>
-                          <div style={headerStyle} className='col-xl-2 col-sm-1 text-center'><h4>Stamina</h4></div>
-                          <div style={headerStyle} className='col-xl-2 col-sm-1 text-center'><h4>Happy</h4></div>
-                          <div style={headerStyle} className='col-xl-2 col-sm-1 text-center'><h4>Activity</h4></div>
-
-                        </div>
-
-                        {this.state.animals.length > 0 ?
-                          this.state.animals.map((animal, i) => (
-
-                            // Check Animal component for more detail, but basically this is each entry of animal
-                            <Animal
-                              key={i}
-                              animal={animal}
-                            />
-
-                          ))
-                          : <div className='row'>No animals in zoo yet</div>}
-
-                      </div>
-
-                      {/* Graph */}
-                      <Graph />
-
+                      <Graph
+                        animals={this.state.animals}
+                      />
                     </div>
                     :
                     <div className="spinner-border text-light" role="status">
                       <span className="sr-only">Loading...</span>
                     </div>
                   }
-
                 </div>
-
               </div>
-
             </div>
-
             :
             <div className="spinner-border text-light" role="status">
               <span className="sr-only">Loading...</span>
