@@ -5,7 +5,7 @@
   "private": true,
   "dependencies": {
     "axios": "^0.19.0",
-    "chart.js": "^2.9.3",
+    "chart.js": "^2.9.4",
     "mdbreact": "^4.22.0",
     "react": "^16.11.0",
     "react-chartjs-2": "^2.8.0",
